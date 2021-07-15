@@ -4,36 +4,33 @@ class Sudoku:
     def __init__(self, file_name=None):
         # get sudoku grid from user
         input_grid = []
-        if file_name is None:
-            for i in range(9):
-                input_grid.append(input(f'Input row {i + 1} (no spaces, use 0 for blanks): '))
-                try:
+        
+        try:
+            if file_name is None:
+                for i in range(9):
+                    input_grid.append(input(f'Input row {i + 1} (no spaces, use 0 for blanks): '))
                     for j in range(9):
                         if int(input_grid[i][j]) not in range(10):
                             raise ValueError
-                except (ValueError, LookupError):
-                    print('Input error. Exiting...')
-                    quit()
-        else:
-            try:
+            else:
                 with open(file_name) as f:
                     input_grid = f.read().split()
                 for i in range(9):
                     for j in range(9):
                         if int(input_grid[i][j]) not in range(10):
                             raise ValueError
-            except FileNotFoundError:
-                print('File not found error. Exiting...')
-                quit()
-            except (ValueError, LookupError):
-                print('Input error. Exiting...')
-                quit()
+            
+            # transfer input to 2D list of ints (9 * 9)
+            self._grid = []
+            for i in range(9):
+                self._grid.append([int(char) for char in input_grid[i]])
 
-        # transfer input to 2D list of ints (9 * 9)
-        self._grid = []
-        for i in range(9):
-            self._grid.append([int(char) for char in input_grid[i]])
+        except FileNotFoundError:
+            print('File not found error.')
+        except (ValueError, LookupError):
+            print('Input error.')
 
+            
     def print_grid(self):
         print()
         for i in range(9):
@@ -50,6 +47,7 @@ class Sudoku:
                 print(23 * '-')
         print()
 
+        
     def _check_valid(self, row, col, num):
         # check entire row
         for c in range(9):
@@ -66,11 +64,13 @@ class Sudoku:
                     return False
         return True
 
+    
     def _possible_numbers(self, row, col):
         for potential in range(1, 10):
             if self._check_valid(row, col, potential):
                 yield potential
 
+                
     def solve(self):
         for r in range(9):
             for c in range(9):

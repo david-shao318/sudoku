@@ -50,7 +50,7 @@ class Sudoku:
                 print(23 * '-')
         print()
 
-    def _check_valid(self, row: int, col: int, num: int) -> bool:
+    def _check_valid(self, row, col, num):
         # check entire row
         for c in range(9):
             if self._grid[row][c] == num:
@@ -66,12 +66,12 @@ class Sudoku:
                     return False
         return True
 
-    def _possible_numbers(self, row: int, col: int):
+    def _possible_numbers(self, row, col):
         for potential in range(1, 10):
             if self._check_valid(row, col, potential):
                 yield potential
 
-    def solve(self) -> None:
+    def solve(self):
         for r in range(9):
             for c in range(9):
                 if self._grid[r][c] == 0:

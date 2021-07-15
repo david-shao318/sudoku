@@ -37,6 +37,7 @@ class Sudoku:
     def print_grid(self):
         print()
         for i in range(9):
+            print(' ', end='')
             for j in range(9):
                 if self._grid[i][j] != 0:
                     print(self._grid[i][j], end=' ')
@@ -46,7 +47,7 @@ class Sudoku:
                     print('|', end=' ')
             print()
             if i % 3 == 2 and i < 8:
-                print(21 * '-')
+                print(23 * '-')
         print()
 
     def _check_valid(self, row: int, col: int, num: int) -> bool:

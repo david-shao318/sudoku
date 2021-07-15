@@ -23,7 +23,7 @@ class Sudoku:
             # transfer input to 2D list of ints (9 * 9)
             self._grid = []
             for i in range(9):
-                self._grid.append([int(char) for char in input_grid[i]])
+                self._grid.append([int(input_grid[i][j]) for j in range(9)])
 
         except FileNotFoundError:
             print('File not found error.')

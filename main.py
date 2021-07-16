@@ -42,9 +42,8 @@ class Sudoku:
                     print('|', end=' ')
             print()
             if i % 3 == 2 and i < 8:
-                print(23 * '—')
-        print()
-        
+                print(23 * '-')
+
     def _check_valid(self, row, col, num):
         # check entire row
         for c in range(9):
@@ -77,6 +76,7 @@ class Sudoku:
                     return
 
         # reaches this point once there are no empty squares left
+        print('\n———Possible Solution———')
         self.print_grid()
 
 

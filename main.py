@@ -30,9 +30,7 @@ class Sudoku:
         except (ValueError, LookupError):
             print('Input error.')
 
-            
     def print_grid(self):
-        print()
         for i in range(9):
             print(' ', end='')
             for j in range(9):
@@ -44,9 +42,8 @@ class Sudoku:
                     print('|', end=' ')
             print()
             if i % 3 == 2 and i < 8:
-                print(23 * '-')
+                print(23 * '—')
         print()
-
         
     def _check_valid(self, row, col, num):
         # check entire row
@@ -64,13 +61,11 @@ class Sudoku:
                     return False
         return True
 
-    
     def _possible_numbers(self, row, col):
         for potential in range(1, 10):
             if self._check_valid(row, col, potential):
                 yield potential
 
-                
     def solve(self):
         for r in range(9):
             for c in range(9):
@@ -85,9 +80,12 @@ class Sudoku:
         self.print_grid()
 
 
-# driver
+# driver code
 if __name__ == '__main__':
 
     new_grid = Sudoku('grid.txt')  # alternatively, ask for user input
+
+    print('————Original Sudoku————')
     new_grid.print_grid()
+
     new_grid.solve()

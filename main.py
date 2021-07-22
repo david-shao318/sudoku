@@ -5,30 +5,24 @@ class Sudoku:
         # get sudoku grid from user
         input_grid = []
         
-        try:
-            if file_name is None:
-                for i in range(9):
-                    input_grid.append(input(f'Input row {i + 1} (no spaces, use 0 for blanks): '))
-                    for j in range(9):
-                        if int(input_grid[i][j]) not in range(10):
-                            raise ValueError
-            else:
-                with open(file_name) as f:
-                    input_grid = f.read().split()
-                for i in range(9):
-                    for j in range(9):
-                        if int(input_grid[i][j]) not in range(10):
-                            raise ValueError
-            
-            # transfer input to 2D list of ints (9 * 9)
-            self._grid = []
+        if file_name is None:
             for i in range(9):
-                self._grid.append([int(input_grid[i][j]) for j in range(9)])
-
-        except FileNotFoundError:
-            print('File not found error.')
-        except (ValueError, LookupError):
-            print('Input error.')
+                input_grid.append(input(f'Input row {i + 1} (no spaces, use 0 for blanks): '))
+                for j in range(9):
+                    if int(input_grid[i][j]) not in range(10):
+                        raise ValueError
+        else:
+            with open(file_name) as f:
+                input_grid = f.read().split()
+            for i in range(9):
+                for j in range(9):
+                    if int(input_grid[i][j]) not in range(10):
+                        raise ValueError
+        
+        # transfer input to 2D list of ints (9 * 9)
+        self._grid = []
+        for i in range(9):
+            self._grid.append([int(input_grid[i][j]) for j in range(9)])
 
     def print_grid(self):
         for i in range(9):

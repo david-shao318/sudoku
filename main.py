@@ -64,7 +64,7 @@ class Sudoku:
             for c in range(9):
                 if self._grid[r][c] == 0:
                     for potential in self._possible_numbers(r, c):
-                        self._grid[r][c] = potential  # can only insert a valid number into puzzle grid
+                        self._grid[r][c] = potential  # insert a valid number into puzzle grid
                         self.solve()  # continue solving
                         self._grid[r][c] = 0  # backtrack if solution failed
                     return

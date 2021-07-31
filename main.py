@@ -1,65 +1,81 @@
 # Sudoku Solver
 
+from timeit import default_timer as timer
+
+
 class Sudoku:
-    def __init__(self, file_name=None):
-        # get sudoku grid from user
-        input_grid = []
-        
-        if file_name is None:
-            for i in range(9):
-                input_grid.append(input(f'Input row {i + 1} (no spaces, use 0 for blanks): '))
-                for j in range(9):
-                    if int(input_grid[i][j]) not in range(10):
-                        raise ValueError
-        else:
+    def __init__(self, file_name: str):
+        """
+        initialize puzzle _grid, solution_count
+        :param file_name: name of input file
+        """
+        self.solution_count = 0
+
+        # input sudoku grid from file
+        # store as 2D list of ints (9 * 9)
+        try:
             with open(file_name) as f:
-                input_grid = f.read().split()
-            for i in range(9):
-                for j in range(9):
-                    if int(input_grid[i][j]) not in range(10):
-                        raise ValueError
-        
-        # transfer input to 2D list of ints (9 * 9)
-        self._grid = []
-        for i in range(9):
-            self._grid.append([int(input_grid[i][j]) for j in range(9)])
+                # only take the first 9 characters from the first 9 lines
+                self._grid = [[int(num) for j, num in enumerate(line) if j < 9] for i, line in enumerate(f) if i < 9]
 
-    def print_grid(self):
-        for i in range(9):
-            print(' ', end='')
-            for j in range(9):
-                if self._grid[i][j] != 0:
-                    print(self._grid[i][j], end=' ')
-                else:
-                    print(' ', end=' ')
-                if j % 3 == 2 and j < 8:
-                    print('|', end=' ')
-            print()
-            if i % 3 == 2 and i < 8:
-                print(23 * '-')
+            # verify grid is exactly 9 * 9
+            if len(self._grid) != 9:
+                raise IndexError
+            for row in self._grid:
+                if len(row) != 9:
+                    raise IndexError
 
-    def _check_valid(self, row, col, num):
-        # check entire row
-        for c in range(9):
-            if self._grid[row][c] == num:
-                return False
-        # check entire col
+        # exit on input errors
+        except FileNotFoundError:
+            raise SystemExit('Input file not found.')
+        except (ValueError, IndexError):
+            raise SystemExit('Input invalid. Input file should contain 9 lines of 9 numerals each.')
+
+    def __str__(self) -> str:
+        """
+        aesthetically display puzzle grid
+        :return: formatted grid
+        """
+        out = ''
         for r in range(9):
-            if self._grid[r][col] == num:
-                return False
-        # check box
+            out += ' '
+            for c in range(9):
+                if self._grid[r][c] != 0:
+                    out += str(self._grid[r][c]) + ' '
+                else:
+                    out += '  '
+                if c % 3 == 2 and c < 8:
+                    out += '| '
+            out += '\n'
+            if r % 3 == 2 and r < 8:
+                out += 23 * '-' + '\n'
+        return out
+
+    def _possible_numbers(self, row: int, col: int):
+        """
+        generate possible numbers for given grid position
+        :param row: row position (0-8)
+        :param col: column position (0-8)
+        """
+        # add seen numbers in row, column, box to set
+        seen = {0}
+        for i in range(9):
+            seen.add(self._grid[i][col])
+            seen.add(self._grid[row][i])
         for r in range((row // 3) * 3, (row // 3) * 3 + 3):
             for c in range((col // 3) * 3, (col // 3) * 3 + 3):
-                if self._grid[r][c] == num:
-                    return False
-        return True
+                seen.add(self._grid[r][c])
 
-    def _possible_numbers(self, row, col):
+        # yield potential numbers not seen
         for potential in range(1, 10):
-            if self._check_valid(row, col, potential):
+            if potential not in seen:
                 yield potential
 
-    def solve(self):
+    def solve(self) -> None:
+        """
+        solve sudoku through recursive backtracking
+        print all possible solutions
+        """
         for r in range(9):
             for c in range(9):
                 if self._grid[r][c] == 0:
@@ -70,16 +86,21 @@ class Sudoku:
                     return
 
         # reaches this point once there are no empty squares left
-        print('\n———Possible Solution———')
-        self.print_grid()
+        print('\n———Possible Solution———', self, sep='\n', end='')
+        self.solution_count += 1
 
 
-# driver code
+# driver
 if __name__ == '__main__':
 
-    new_grid = Sudoku('grid.txt')  # alternatively, ask for user input
+    # load input grid
+    new_grid = Sudoku('grid.txt')
+    print('————Original Sudoku————', new_grid, sep='\n', end='')
 
-    print('————Original Sudoku————')
-    new_grid.print_grid()
-
+    # solve puzzle, timed
+    start = timer()
     new_grid.solve()
+    end = timer()
+
+    print('\nNumber of Solutions:', new_grid.solution_count)
+    print('Seconds Elapsed:', round(end - start, 6))

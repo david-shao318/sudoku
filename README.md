@@ -4,12 +4,13 @@ Working with backtracking and generators in Python.
 
 ## Usage
 
-1. Using file input (currently configured to 'grid.txt').
-2. Using direct input.
+Input using file input (currently set to 'grid.txt').
 
 Input grid using digits 1 to 9 and 0 for blanks. Newline for each row.
 
 ### Sample Input
+
+`grid.txt`
 
 ```
 040350018

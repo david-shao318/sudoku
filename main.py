@@ -15,20 +15,20 @@ class Sudoku:
         # store as 2D list of ints (9 * 9)
         try:
             with open(file_name) as f:
-                # only take the first 9 characters from the first 9 lines
-                self._grid = [[int(num) for j, num in enumerate(line) if j < 9] for i, line in enumerate(f) if i < 9]
+                # take the first 9 characters from the first 9 lines
+                self._grid = [[int(num) for num in f.readline()[:9]] for _ in range(9)]
 
             # verify grid is exactly 9 * 9
             if len(self._grid) != 9:
-                raise IndexError
+                raise ValueError
             for row in self._grid:
                 if len(row) != 9:
-                    raise IndexError
+                    raise ValueError
 
         # exit on input errors
         except FileNotFoundError:
             raise SystemExit('Input file not found.')
-        except (ValueError, IndexError):
+        except ValueError:
             raise SystemExit('Input invalid. Input file should contain 9 lines of 9 numerals each.')
 
     def __str__(self) -> str:

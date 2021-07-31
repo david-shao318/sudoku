@@ -71,7 +71,7 @@ class Sudoku:
             if potential not in seen:
                 yield potential
 
-    def solve(self) -> None:
+    def solve(self):
         """
         solve sudoku through recursive backtracking
         print all possible solutions

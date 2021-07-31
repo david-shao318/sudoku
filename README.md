@@ -1,6 +1,6 @@
 # Sudoku Solver
 
-Working with backtracking and generators in Python.
+Working with backtracking in Python.
 
 ## Usage
 

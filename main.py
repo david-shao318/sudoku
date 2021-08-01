@@ -71,19 +71,22 @@ class Sudoku:
             if potential not in seen:
                 yield potential
 
-    def solve(self):
+    def solve(self, start_row=0, start_col=0):
         """
         solve sudoku through recursive backtracking
+        start each recursion where previous solve left off
         print all possible solutions
         """
-        for r in range(9):
-            for c in range(9):
+        for r in range(start_row, 9):
+            for c in range(start_col, 9):
                 if self._grid[r][c] == 0:
                     for potential in self._possible_numbers(r, c):
                         self._grid[r][c] = potential  # insert a valid number into puzzle grid
-                        self.solve()  # continue solving
+                        self.solve(r, c)  # continue solving
                         self._grid[r][c] = 0  # backtrack if solution failed
                     return
+            if r == start_row:
+                start_col = 0
 
         # reaches this point once there are no empty squares left
         print('\n———Possible Solution———', self, sep='\n', end='')

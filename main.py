@@ -52,25 +52,20 @@ class Sudoku:
                 out += 23 * '-' + '\n'
         return out
 
-    def _possible_numbers(self, row: int, col: int):
+    def _seen_numbers(self, seen: list[bool], row: int, col: int):
         """
-        generate possible numbers for given grid position
+        find which numbers have been seen at given position
+        :param seen: list of 10 booleans, whether number at index is seen at given position
         :param row: row position (0-8)
         :param col: column position (0-8)
         """
-        # add seen numbers in row, column, box to set
-        seen = {0}
+        # set seen numbers in row, column, box
         for i in range(9):
-            seen.add(self._grid[i][col])
-            seen.add(self._grid[row][i])
+            seen[self._grid[i][col]] = True
+            seen[self._grid[row][i]] = True
         for r in range((row // 3) * 3, (row // 3) * 3 + 3):
             for c in range((col // 3) * 3, (col // 3) * 3 + 3):
-                seen.add(self._grid[r][c])
-
-        # yield potential numbers not seen
-        for potential in range(1, 10):
-            if potential not in seen:
-                yield potential
+                seen[self._grid[r][c]] = True
 
     def _solution_invalid(self) -> bool:
         """
@@ -79,20 +74,20 @@ class Sudoku:
         """
         # test every row and column
         for i in range(9):
-            curr_row = curr_col = set()
+            curr_row = curr_col = [False] * 9
             for j in range(9):
-                curr_row.add(self._grid[i][j])
-                curr_col.add(self._grid[j][i])
-            if len(curr_row) != 9 or len(curr_col) != 9:
+                curr_row[self._grid[i][j] - 1] = True
+                curr_col[self._grid[j][i] - 1] = True
+            if False in curr_row or False in curr_col:
                 return True
         # test every box
         for i in range(3):
             for j in range(3):
-                curr_box = set()
+                curr_box = [False] * 9
                 for k in range(3):
                     for l in range(3):
-                        curr_box.add(self._grid[i * 3 + k][j * 3 + l])
-                if len(curr_box) != 9:
+                        curr_box[self._grid[i * 3 + k][j * 3 + l] - 1] = True
+                if False in curr_box:
                     return True
         return False
 
@@ -105,13 +100,21 @@ class Sudoku:
         for r in range(start_row, 9):
             for c in range(start_col, 9):
                 if self._grid[r][c] == 0:
+
                     if not self.puzzle_incomplete:  # inputted puzzle is incomplete, will attempt to solve
                         self.puzzle_incomplete = True
-                    for potential in self._possible_numbers(r, c):
-                        self._grid[r][c] = potential  # insert a valid number into puzzle grid
-                        self.solve(r, c)  # continue solving
-                        self._grid[r][c] = 0  # backtrack if solution failed
+
+                    # find all seen numbers
+                    seen = [False] * 10
+                    self._seen_numbers(seen, r, c)
+
+                    for potential in range(1, 10):
+                        if not seen[potential]:
+                            self._grid[r][c] = potential  # insert a valid number into puzzle grid
+                            self.solve(r, c)  # continue solving
+                            self._grid[r][c] = 0  # backtrack if solution failed
                     return
+
             if r == start_row:
                 start_col = 0
 

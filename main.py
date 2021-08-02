@@ -10,6 +10,7 @@ class Sudoku:
         :param file_name: name of input file
         """
         self.solution_count = 0
+        self.puzzle_incomplete = False  # assume inputted puzzle is completely filled (no blanks)
 
         # input sudoku grid from file
         # store as 2D list of ints (9 * 9)
@@ -71,6 +72,30 @@ class Sudoku:
             if potential not in seen:
                 yield potential
 
+    def _solution_invalid(self) -> bool:
+        """
+        test if current complete solution is invalid
+        :return: True if invalid
+        """
+        # test every row and column
+        for i in range(9):
+            curr_row = curr_col = set()
+            for j in range(9):
+                curr_row.add(self._grid[i][j])
+                curr_col.add(self._grid[j][i])
+            if len(curr_row) != 9 or len(curr_col) != 9:
+                return True
+        # test every box
+        for i in range(3):
+            for j in range(3):
+                curr_box = set()
+                for k in range(3):
+                    for l in range(3):
+                        curr_box.add(self._grid[i * 3 + k][j * 3 + l])
+                if len(curr_box) != 9:
+                    return True
+        return False
+
     def solve(self, start_row=0, start_col=0):
         """
         solve sudoku through recursive backtracking
@@ -80,6 +105,8 @@ class Sudoku:
         for r in range(start_row, 9):
             for c in range(start_col, 9):
                 if self._grid[r][c] == 0:
+                    if not self.puzzle_incomplete:  # inputted puzzle is incomplete, will attempt to solve
+                        self.puzzle_incomplete = True
                     for potential in self._possible_numbers(r, c):
                         self._grid[r][c] = potential  # insert a valid number into puzzle grid
                         self.solve(r, c)  # continue solving
@@ -88,14 +115,20 @@ class Sudoku:
             if r == start_row:
                 start_col = 0
 
-        # reaches this point once there are no empty squares left
+        # reaches here once there are no empty squares left
+
+        # if original puzzle was complete (no blanks), test if solution is valid
+        if not self.puzzle_incomplete:
+            if self._solution_invalid():
+                return
+
+        # solution is valid
         print('\n———Possible Solution———', self, sep='\n', end='')
         self.solution_count += 1
 
 
 # driver
 if __name__ == '__main__':
-
     # load input grid
     new_grid = Sudoku('grid.txt')
     print('————Original Sudoku————', new_grid, sep='\n', end='')

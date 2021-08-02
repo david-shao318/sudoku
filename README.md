@@ -52,6 +52,9 @@ Input grid using digits 1 to 9 and 0 for blanks. Newline for each row.
  9 3 1 | 2 7 4 | 8 6 5 
  6 8 7 | 5 1 3 | 4 2 9 
  2 5 4 | 6 8 9 | 1 3 7
+
+Number of Solutions: 1
+Seconds Elapsed: 0.910549
 ```
 
 Source: New York Times - Hard

@@ -1,4 +1,4 @@
-# Sudoku Solver
+# Basic Sudoku Solver
 
 Working with backtracking in Python.
 
